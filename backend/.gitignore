@@ -11,3 +11,9 @@ build/
 
 # Test related files
 coverage/
+
+
+
+data/*
+
+!.gitkeep
