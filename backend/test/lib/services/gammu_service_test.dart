@@ -1,4 +1,6 @@
 import 'package:backend/services/gammu_service.dart';
+import 'package:backend/services/gammu_service/folder.dart';
+import 'package:backend/services/gammu_service/message.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
@@ -6,7 +8,15 @@ import '../../fixtures/fixtures_helper.dart';
 
 void main() {
   final rootPath = fixturePath('gammu');
-  final service = GammuService(rootPath);
+  final service = GammuService(path: rootPath);
+
+  test('should read a message', () async {
+    const name = 'IN20221220_041921_00_MTC_00';
+    const text =
+        'Пора пополнить счет! Сейчас на балансе 11 руб. Оплачивать без ';
+    final data = await service.readMessage(name, folder: Folder.inbox);
+    expect(text, equals(data));
+  });
 
   test('should get outbox messages list', () async {
     const name1 = 'OUTC20221226_102832_00_+79112223344_sms0';
@@ -18,6 +28,7 @@ void main() {
       sender: '+79112223344',
       order: 0,
       part: 0,
+      folder: Folder.outbox,
     );
 
     const name2 = 'OUTC20221226_1028319_00_+79112223344_sms0';
@@ -29,6 +40,7 @@ void main() {
       sender: '+79112223344',
       order: 0,
       part: 0,
+      folder: Folder.outbox,
     );
 
     final list = await service.readOutboxList();
@@ -45,6 +57,7 @@ void main() {
       sender: 'MTC',
       order: 0,
       part: 0,
+      folder: Folder.inbox,
     );
 
     const name2 = 'IN20221220_041921_00_MTC_01';
@@ -56,7 +69,9 @@ void main() {
       sender: 'MTC',
       order: 0,
       part: 1,
+      folder: Folder.inbox,
     );
+
     final list = await service.readInboxList();
     expect(list, equals([msg1, msg2]));
   });
