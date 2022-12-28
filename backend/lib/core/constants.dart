@@ -1,1 +1,1 @@
-const gammuPath = 'data';
+const gammuPath = '/data';
