@@ -1,6 +1,6 @@
 import 'dart:io';
-import 'gammu_service/folder.dart';
-import 'gammu_service/message.dart';
+import 'folder.dart';
+import 'message.dart';
 
 class GammuService {
   GammuService({required String path}) : folderPool = FolderPool(root: path);
@@ -25,11 +25,13 @@ class GammuService {
       ..sort((a, b) => b.dateTime.compareTo(a.dateTime));
   }
 
-  Future<String?> readMessage(String name, {required Folder folder}) async {
+  Future<Message?> readMessage(String name, {required Folder folder}) async {
     final path = folderPool.getFilePathByFolder('$name$msgExt', folder: folder);
     if (path == null) return null;
 
     final file = File(path);
-    return Message.fromFile(file, folder: folder).read();
+    final message = Message.fromFile(file, folder: folder);
+    await message.readContent();
+    return message;
   }
 }

@@ -8,16 +8,6 @@ import 'folder.dart';
 typedef Messages = List<Message>;
 
 class Message extends Equatable {
-  const Message({
-    required this.name,
-    required this.folder,
-    required this.path,
-    required this.dateTime,
-    required this.sender,
-    required this.order,
-    required this.part,
-  });
-
   factory Message.fromFile(File file, {required Folder folder}) {
     final name = p.basenameWithoutExtension(file.path);
     final path = file.path;
@@ -41,6 +31,16 @@ class Message extends Equatable {
     );
   }
 
+  Message({
+    required this.name,
+    required this.folder,
+    required this.path,
+    required this.dateTime,
+    required this.sender,
+    required this.order,
+    required this.part,
+  });
+
   final String name;
   final Folder folder;
   final String path;
@@ -49,8 +49,26 @@ class Message extends Equatable {
   final int order;
   final int part;
 
-  Future<String> read() => File(path).readAsString();
+  var _text = '';
+
+  Future<void> readContent() async => _text = await File(path).readAsString();
+
+  String get text => _text;
 
   @override
-  List<Object?> get props => [name, path, dateTime, sender, order, part];
+  List<Object?> get props => [name, path, dateTime, sender, order, part, text];
+
+  Map<String, dynamic> toJson() {
+    final result = <String, dynamic>{}
+      ..addAll({'name': name})
+      ..addAll({'folder': '$folder'})
+      ..addAll({'path': path})
+      ..addAll({'text': text})
+      ..addAll({'dateTime': dateTime.millisecondsSinceEpoch})
+      ..addAll({'sender': sender})
+      ..addAll({'order': order})
+      ..addAll({'part': part});
+
+    return result;
+  }
 }

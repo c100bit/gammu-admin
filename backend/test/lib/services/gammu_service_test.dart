@@ -1,6 +1,4 @@
-import 'package:backend/services/gammu_service.dart';
-import 'package:backend/services/gammu_service/folder.dart';
-import 'package:backend/services/gammu_service/message.dart';
+import 'package:backend/services/gammu_service/gammu_service.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
@@ -14,8 +12,8 @@ void main() {
     const name = 'IN20221220_041921_00_MTC_00';
     const text =
         'Пора пополнить счет! Сейчас на балансе 11 руб. Оплачивать без ';
-    final data = await service.readMessage(name, folder: Folder.inbox);
-    expect(text, equals(data));
+    final message = await service.readMessage(name, folder: Folder.inbox);
+    expect(text, equals(message?.text));
   });
 
   test('should get outbox messages list', () async {
