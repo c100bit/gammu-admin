@@ -14,4 +14,4 @@ services:
         max-file: "5"
         max-size: "5m"
     volumes:
-      - /var/spool/gammu:/data
+      - C:/data/:/data
