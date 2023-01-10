@@ -10,7 +10,7 @@ class FetchSmsList extends SmsListEvent {
   final Folder folder;
 
   FetchSmsList({required this.folder}) {
-    print(this);
+    debugPrint('$this');
   }
 
   @override
