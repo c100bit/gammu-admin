@@ -4,6 +4,7 @@ import 'package:frontend/services/gammu_service/command.dart';
 import 'package:web_socket_channel/io.dart';
 import 'package:web_socket_channel/status.dart' as status;
 
+import 'gammu_service/folder.dart';
 import 'gammu_service/message.dart';
 
 class GammuService {
@@ -11,7 +12,21 @@ class GammuService {
   final _commandsPool = <Completer>[];
 
   void _handler(dynamic message) {
+    print(message);
     _channel?.sink.add('received!');
+  }
+
+  Future<Messages> fetchByFolder(Folder folder) {
+    switch (folder) {
+      case Folder.inbox:
+        return _emit<Messages>(Command.fetchInbox);
+      case Folder.sent:
+        return _emit<Messages>(Command.fetchSent);
+      case Folder.error:
+        return _emit<Messages>(Command.fetchError);
+      case Folder.outbox:
+        return _emit<Messages>(Command.fetchOutbox);
+    }
   }
 
   Future<Messages> fetchInbox() => _emit<Messages>(Command.fetchInbox);

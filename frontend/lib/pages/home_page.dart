@@ -12,6 +12,7 @@ class HomePage extends StatelessWidget {
         appBarBuilder: (context, tabsRouter) => AppBar(
               centerTitle: true,
               title: const Text('Gammu Admin'),
+              leading: const AutoLeadingButton(),
             ),
         bottomNavigationBuilder: (context, tabsRouter) => SalomonBottomBar(
               currentIndex: tabsRouter.activeIndex,
@@ -40,10 +41,10 @@ class HomePage extends StatelessWidget {
               ],
             ),
         routes: const [
-          InboxRoute(),
-          OutboxRoute(),
-          SentRoute(),
-          ErrorRoute(),
+          InboxTab(),
+          OutboxTab(),
+          SentTab(),
+          ErrorTab(),
         ]);
   }
 }

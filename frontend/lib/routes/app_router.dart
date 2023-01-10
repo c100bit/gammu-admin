@@ -1,12 +1,9 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/empty_router_widgets.dart';
 
-import '../home_page.dart';
-import '../pages/error_page.dart';
-import '../pages/inbox_page.dart';
+import '../pages/home_page.dart';
+import '../pages/list_page/list_page.dart';
 import '../pages/message_page.dart';
-import '../pages/outbox_page.dart';
-import '../pages/sent_page.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
@@ -14,47 +11,38 @@ import '../pages/sent_page.dart';
     AutoRoute(page: HomePage, path: '/', children: [
       AutoRoute(
         path: 'inbox',
-        name: 'InboxRouter',
+        name: 'InboxTab',
         page: EmptyRouterPage,
         children: [
-          AutoRoute(
-            path: '',
-            page: InboxPage,
-          ),
-          AutoRoute(
-            path: ':name',
-            page: MessagePage,
-          ),
-        ],
-      ),
-      AutoRoute(
-        path: 'sent',
-        page: SentPage,
-        children: [
-          AutoRoute(
-            path: ':name',
-            page: MessagePage,
-          ),
-        ],
-      ),
-      AutoRoute(
-        path: 'error',
-        page: ErrorPage,
-        children: [
-          AutoRoute(
-            path: ':name',
-            page: MessagePage,
-          ),
+          AutoRoute(path: '', page: ListPage),
+          AutoRoute(path: ':name', page: MessagePage),
         ],
       ),
       AutoRoute(
         path: 'outbox',
-        page: OutboxPage,
+        name: 'OutboxTab',
+        page: EmptyRouterPage,
         children: [
-          AutoRoute(
-            path: ':name',
-            page: MessagePage,
-          ),
+          AutoRoute(path: '', page: ListPage),
+          AutoRoute(path: ':name', page: MessagePage),
+        ],
+      ),
+      AutoRoute(
+        path: 'sent',
+        name: 'SentTab',
+        page: EmptyRouterPage,
+        children: [
+          AutoRoute(path: '', page: ListPage),
+          AutoRoute(path: ':name', page: MessagePage),
+        ],
+      ),
+      AutoRoute(
+        path: 'error',
+        name: 'ErrorTab',
+        page: EmptyRouterPage,
+        children: [
+          AutoRoute(path: '', page: ListPage),
+          AutoRoute(path: ':name', page: MessagePage),
         ],
       ),
     ]),
