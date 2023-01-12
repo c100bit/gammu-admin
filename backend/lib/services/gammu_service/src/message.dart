@@ -58,7 +58,7 @@ class Message extends Equatable {
   @override
   List<Object?> get props => [name, path, dateTime, sender, order, part, text];
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> toMap() {
     final result = <String, dynamic>{}
       ..addAll({'name': name})
       ..addAll({'folder': '$folder'})

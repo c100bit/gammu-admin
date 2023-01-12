@@ -7,6 +7,8 @@ class MockGammuService extends Mock implements GammuService {}
 
 void main() {
   final gammuService = MockGammuService();
+  const requestId = 'requestId';
+
   final msg = Message(
     name: 'msg',
     path: 'path',
@@ -29,35 +31,36 @@ void main() {
   blocTest<GammuCubit, GammuState>(
     'should return messages when fetchInbox',
     build: () => GammuCubit(gammuService: gammuService),
-    act: (cubit) => cubit.fetchInbox(),
-    expect: () => [GammuListState(messages: messages)],
+    act: (cubit) => cubit.fetchInbox(requestId),
+    expect: () => [GammuListState(requestId: requestId, messages: messages)],
   );
 
   blocTest<GammuCubit, GammuState>(
     'should return messages when fetchOutbox',
     build: () => GammuCubit(gammuService: gammuService),
-    act: (cubit) => cubit.fetchOutbox(),
-    expect: () => [GammuListState(messages: messages)],
+    act: (cubit) => cubit.fetchOutbox(requestId),
+    expect: () => [GammuListState(requestId: requestId, messages: messages)],
   );
 
   blocTest<GammuCubit, GammuState>(
     'should return messages when fetchSent',
     build: () => GammuCubit(gammuService: gammuService),
-    act: (cubit) => cubit.fetchSent(),
-    expect: () => [GammuListState(messages: messages)],
+    act: (cubit) => cubit.fetchSent(requestId),
+    expect: () => [GammuListState(requestId: requestId, messages: messages)],
   );
 
   blocTest<GammuCubit, GammuState>(
     'should return messages when fetchError',
     build: () => GammuCubit(gammuService: gammuService),
-    act: (cubit) => cubit.fetchError(),
-    expect: () => [GammuListState(messages: messages)],
+    act: (cubit) => cubit.fetchError(requestId),
+    expect: () => [GammuListState(requestId: requestId, messages: messages)],
   );
 
   blocTest<GammuCubit, GammuState>(
     'should return message when fetchMessage',
     build: () => GammuCubit(gammuService: gammuService),
-    act: (cubit) => cubit.fetchMessage(name: msg.name, folder: Folder.inbox),
-    expect: () => [GammuOneMsgState(message: msg)],
+    act: (cubit) => cubit
+        .fetchMessage(requestId, params: {'name': msg.name, 'folder': 'inbox'}),
+    expect: () => [GammuOneMsgState(requestId: requestId, message: msg)],
   );
 }

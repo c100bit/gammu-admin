@@ -2,7 +2,7 @@ import 'package:backend/services/gammu_service/gammu_service.dart';
 import 'package:path/path.dart' as p;
 import 'package:test/test.dart';
 
-import '../../fixtures/fixtures_helper.dart';
+import '../../helpers/fixtures_helper.dart';
 
 void main() {
   final rootPath = fixturePath('gammu');
