@@ -1,4 +1,7 @@
 import 'dart:io';
+
+import 'package:path/path.dart' as p;
+
 import 'folder.dart';
 import 'message.dart';
 
@@ -13,16 +16,27 @@ class GammuService {
   Future<Messages> readInboxList() => _readList(Folder.inbox);
   Future<Messages> readOutboxList() => _readList(Folder.outbox);
   Future<Messages> readSentList() => _readList(Folder.sent);
+  Future<Messages> filterList(String name, {required Folder folder}) =>
+      _readList(folder, name: name.toLowerCase());
 
-  Future<Messages> _readList(Folder folder) async {
+  Future<Messages> _readList(Folder folder, {String? name}) async {
     final list = await folderPool.getDirByFolder(folder)?.list().toList();
     if (list == null) return [];
 
-    return list
-        .whereType<File>()
-        .map((file) => Message.fromFile(file, folder: folder))
-        .toList()
-      ..sort((a, b) => b.dateTime.compareTo(a.dateTime));
+    final files = list.whereType<File>();
+    final filtered = name == null
+        ? files
+        : files.where(
+            (file) => p
+                .basenameWithoutExtension(file.path)
+                .toLowerCase()
+                .contains(name),
+          );
+    final messages = await Future.wait(
+      filtered.map((file) => Message.fromFile(file, folder: folder)).toList(),
+    );
+
+    return messages..sort((a, b) => b.dateTime.compareTo(a.dateTime));
   }
 
   Future<Message?> readMessage(String name, {required Folder folder}) async {
@@ -30,8 +44,10 @@ class GammuService {
     if (path == null) return null;
 
     final file = File(path);
-    final message = Message.fromFile(file, folder: folder);
-    await message.readContent();
-    return message;
+    return Message.fromFile(
+      file,
+      folder: folder,
+      withContent: true,
+    );
   }
 }

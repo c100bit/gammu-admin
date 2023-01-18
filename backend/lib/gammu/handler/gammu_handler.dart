@@ -27,9 +27,13 @@ class GammuHandler {
       case GammuCommand.fetchMessage:
         cubit.fetchMessage(event.id, params: event.params);
         break;
+      case GammuCommand.filterList:
+        cubit.filterList(event.id, params: event.params);
+        break;
     }
   }
 
   void subscribe(WebSocketChannel channel) => cubit.subscribe(channel);
+
   void unsubscribe(WebSocketChannel channel) => cubit.unsubscribe(channel);
 }

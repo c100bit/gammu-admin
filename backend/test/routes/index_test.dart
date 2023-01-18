@@ -84,9 +84,10 @@ void main() {
 
     test('should call fetchMessage".', () async {
       final request = buildRequest(
-          id: requestId,
-          cmd: GammuCommand.fetchMessage,
-          params: {'name': msgName, 'folder': '$msgFolder'});
+        id: requestId,
+        cmd: GammuCommand.fetchMessage,
+        params: {'name': msgName, 'folder': '$msgFolder'},
+      );
       socket.sink.add(request);
       await untilCalled(
         () => gammuCubit.fetchMessage(

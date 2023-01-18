@@ -15,10 +15,9 @@ import 'package:auto_route/auto_route.dart' as _i5;
 import 'package:auto_route/empty_router_widgets.dart' as _i2;
 import 'package:flutter/material.dart' as _i6;
 
-import '../pages/home_page.dart' as _i1;
-import '../pages/list_page/list_page.dart' as _i3;
-import '../pages/message_page.dart' as _i4;
-import '../services/gammu_service/folder.dart' as _i7;
+import '../pages/message/message_page.dart' as _i4;
+import '../pages/root_page.dart' as _i1;
+import '../pages/sms_list/list_page.dart' as _i3;
 
 class AppRouter extends _i5.RootStackRouter {
   AppRouter([_i6.GlobalKey<_i6.NavigatorState>? navigatorKey])
@@ -26,10 +25,10 @@ class AppRouter extends _i5.RootStackRouter {
 
   @override
   final Map<String, _i5.PageFactory> pagesMap = {
-    HomeRoute.name: (routeData) {
+    RootRoute.name: (routeData) {
       return _i5.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: const _i1.HomePage(),
+        child: const _i1.RootPage(),
       );
     },
     InboxTab.name: (routeData) {
@@ -57,22 +56,22 @@ class AppRouter extends _i5.RootStackRouter {
       );
     },
     ListRoute.name: (routeData) {
-      final args =
-          routeData.argsAs<ListRouteArgs>(orElse: () => const ListRouteArgs());
       return _i5.MaterialPageX<dynamic>(
         routeData: routeData,
-        child: _i3.ListPage(key: args.key),
+        child: const _i3.ListPage(),
       );
     },
     MessageRoute.name: (routeData) {
-      final args = routeData.argsAs<MessageRouteArgs>();
+      final pathParams = routeData.inheritedPathParams;
+      final args = routeData.argsAs<MessageRouteArgs>(
+          orElse: () => MessageRouteArgs(name: pathParams.getString('name')));
       return _i5.MaterialPageX<dynamic>(
         routeData: routeData,
         child: _i4.MessagePage(
           key: args.key,
           name: args.name,
-          folder: args.folder,
         ),
+        fullscreenDialog: true,
       );
     },
   };
@@ -80,13 +79,13 @@ class AppRouter extends _i5.RootStackRouter {
   @override
   List<_i5.RouteConfig> get routes => [
         _i5.RouteConfig(
-          HomeRoute.name,
+          RootRoute.name,
           path: '/',
           children: [
             _i5.RouteConfig(
               InboxTab.name,
               path: 'inbox',
-              parent: HomeRoute.name,
+              parent: RootRoute.name,
               children: [
                 _i5.RouteConfig(
                   ListRoute.name,
@@ -103,7 +102,7 @@ class AppRouter extends _i5.RootStackRouter {
             _i5.RouteConfig(
               OutboxTab.name,
               path: 'outbox',
-              parent: HomeRoute.name,
+              parent: RootRoute.name,
               children: [
                 _i5.RouteConfig(
                   ListRoute.name,
@@ -120,7 +119,7 @@ class AppRouter extends _i5.RootStackRouter {
             _i5.RouteConfig(
               SentTab.name,
               path: 'sent',
-              parent: HomeRoute.name,
+              parent: RootRoute.name,
               children: [
                 _i5.RouteConfig(
                   ListRoute.name,
@@ -137,7 +136,7 @@ class AppRouter extends _i5.RootStackRouter {
             _i5.RouteConfig(
               ErrorTab.name,
               path: 'error',
-              parent: HomeRoute.name,
+              parent: RootRoute.name,
               children: [
                 _i5.RouteConfig(
                   ListRoute.name,
@@ -157,16 +156,16 @@ class AppRouter extends _i5.RootStackRouter {
 }
 
 /// generated route for
-/// [_i1.HomePage]
-class HomeRoute extends _i5.PageRouteInfo<void> {
-  const HomeRoute({List<_i5.PageRouteInfo>? children})
+/// [_i1.RootPage]
+class RootRoute extends _i5.PageRouteInfo<void> {
+  const RootRoute({List<_i5.PageRouteInfo>? children})
       : super(
-          HomeRoute.name,
+          RootRoute.name,
           path: '/',
           initialChildren: children,
         );
 
-  static const String name = 'HomeRoute';
+  static const String name = 'RootRoute';
 }
 
 /// generated route for
@@ -223,26 +222,14 @@ class ErrorTab extends _i5.PageRouteInfo<void> {
 
 /// generated route for
 /// [_i3.ListPage]
-class ListRoute extends _i5.PageRouteInfo<ListRouteArgs> {
-  ListRoute({_i6.Key? key})
+class ListRoute extends _i5.PageRouteInfo<void> {
+  const ListRoute()
       : super(
           ListRoute.name,
           path: '',
-          args: ListRouteArgs(key: key),
         );
 
   static const String name = 'ListRoute';
-}
-
-class ListRouteArgs {
-  const ListRouteArgs({this.key});
-
-  final _i6.Key? key;
-
-  @override
-  String toString() {
-    return 'ListRouteArgs{key: $key}';
-  }
 }
 
 /// generated route for
@@ -251,15 +238,14 @@ class MessageRoute extends _i5.PageRouteInfo<MessageRouteArgs> {
   MessageRoute({
     _i6.Key? key,
     required String name,
-    required _i7.Folder folder,
   }) : super(
           MessageRoute.name,
           path: ':name',
           args: MessageRouteArgs(
             key: key,
             name: name,
-            folder: folder,
           ),
+          rawPathParams: {'name': name},
         );
 
   static const String name = 'MessageRoute';
@@ -269,17 +255,14 @@ class MessageRouteArgs {
   const MessageRouteArgs({
     this.key,
     required this.name,
-    required this.folder,
   });
 
   final _i6.Key? key;
 
   final String name;
 
-  final _i7.Folder folder;
-
   @override
   String toString() {
-    return 'MessageRouteArgs{key: $key, name: $name, folder: $folder}';
+    return 'MessageRouteArgs{key: $key, name: $name}';
   }
 }

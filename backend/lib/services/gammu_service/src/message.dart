@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:charset/charset.dart';
 import 'package:equatable/equatable.dart';
 import 'package:path/path.dart' as p;
 
@@ -8,7 +9,7 @@ import 'folder.dart';
 typedef Messages = List<Message>;
 
 class Message extends Equatable {
-  Message({
+  const Message({
     required this.name,
     required this.folder,
     required this.path,
@@ -16,9 +17,14 @@ class Message extends Equatable {
     required this.sender,
     required this.order,
     required this.part,
+    this.text,
   });
 
-  factory Message.fromFile(File file, {required Folder folder}) {
+  static Future<Message> fromFile(
+    File file, {
+    required Folder folder,
+    bool withContent = false,
+  }) async {
     final name = p.basenameWithoutExtension(file.path);
     final path = file.path;
     final data = name.split('_');
@@ -30,6 +36,8 @@ class Message extends Equatable {
     final part =
         folder.isInbox() ? int.parse(data[4]) : int.parse(data[4].substring(3));
 
+    final content = withContent ? await _readContent(file) : '';
+
     return Message(
       folder: folder,
       name: name,
@@ -38,6 +46,7 @@ class Message extends Equatable {
       sender: sender,
       order: order,
       part: part,
+      text: content,
     );
   }
 
@@ -48,12 +57,7 @@ class Message extends Equatable {
   final String sender;
   final int order;
   final int part;
-
-  var _text = '';
-
-  Future<void> readContent() async => _text = await File(path).readAsString();
-
-  String get text => _text;
+  final String? text;
 
   @override
   List<Object?> get props => [name, path, dateTime, sender, order, part, text];
@@ -69,5 +73,17 @@ class Message extends Equatable {
       ..addAll({'part': part});
 
     return result;
+  }
+
+  static Future<String> _readContent(File file) async {
+    late final String content;
+
+    try {
+      content = await file.readAsString();
+    } on FileSystemException {
+      final bytes = await file.readAsBytes();
+      content = utf16.decode(bytes);
+    }
+    return content;
   }
 }

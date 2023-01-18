@@ -20,12 +20,12 @@ class GammuListState extends GammuState {
   String toString() => json.encode(toMap());
 
   @override
-  List<Object?> get props => [messages];
+  List<Object?> get props => [requestId, messages];
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{}..addAll({
         'requestId': requestId,
-        'messages': messages.map((x) => x.toMap()).toList()
+        'data': messages.map((x) => x.toMap()).toList()
       });
 
     return result;
@@ -42,14 +42,15 @@ class GammuOneMsgState extends GammuState {
 
   @override
   String toString() => json.encode(toMap());
+
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [requestId, message];
 
   Map<String, dynamic> toMap() {
     final result = <String, dynamic>{};
 
     if (message != null) {
-      result.addAll({'requestId': requestId, 'message': message!.toMap()});
+      result.addAll({'requestId': requestId, 'data': message!.toMap()});
     }
 
     return result;

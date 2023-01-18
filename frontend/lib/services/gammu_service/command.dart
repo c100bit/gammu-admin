@@ -3,6 +3,7 @@ enum Command {
   fetchSent,
   fetchError,
   fetchOutbox,
+  filterList,
   fetchMessage;
 
   @override

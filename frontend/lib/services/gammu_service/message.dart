@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:equatable/equatable.dart';
 
 import 'folder.dart';
@@ -26,4 +28,19 @@ class Message extends Equatable {
   @override
   List<Object?> get props =>
       [name, dateTime, folder, sender, order, part, text];
+
+  factory Message.fromMap(Map<String, dynamic> map) {
+    return Message(
+      name: map['name'] ?? '',
+      text: map['text'] ?? '',
+      folder: Folder.fromMap(map['folder']),
+      dateTime: DateTime.fromMillisecondsSinceEpoch(map['dateTime']),
+      sender: map['sender'] ?? '',
+      order: map['order']?.toInt() ?? 0,
+      part: map['part']?.toInt() ?? 0,
+    );
+  }
+
+  factory Message.fromJson(String source) =>
+      Message.fromMap(json.decode(source));
 }

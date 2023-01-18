@@ -1,3 +1,5 @@
+import 'package:frontend/core/extensions.dart';
+
 enum Folder {
   outbox,
   inbox,
@@ -8,4 +10,7 @@ enum Folder {
   String toString() => name;
 
   bool isInbox() => name == Folder.inbox.name;
+
+  factory Folder.fromMap(String cmd) =>
+      cmd.toEnum<Folder>(Folder.values) ?? Folder.inbox;
 }

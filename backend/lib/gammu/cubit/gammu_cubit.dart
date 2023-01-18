@@ -31,6 +31,19 @@ class GammuCubit extends BroadcastCubit<GammuState> {
     emit(GammuListState(requestId: requestId, messages: messages));
   }
 
+  Future<void> filterList(
+    String requestId, {
+    required Map<String, String> params,
+  }) async {
+    final folder = params['folder']?.toEnum<Folder>(Folder.values);
+    if (folder == null || !params.containsKey('name')) {
+      return emit(GammuListState(requestId: requestId, messages: const []));
+    }
+    final messages =
+        await gammuService.filterList(params['name']!, folder: folder);
+    emit(GammuListState(requestId: requestId, messages: messages));
+  }
+
   Future<void> fetchMessage(
     String requestId, {
     required Map<String, String> params,

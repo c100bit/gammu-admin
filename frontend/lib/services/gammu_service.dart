@@ -1,54 +1,101 @@
 import 'dart:async';
+import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:frontend/services/gammu_service/command.dart';
-import 'package:web_socket_channel/io.dart';
+import 'package:web_socket_channel/web_socket_channel.dart';
+
 import 'package:web_socket_channel/status.dart' as status;
 
 import 'gammu_service/folder.dart';
 import 'gammu_service/message.dart';
 
 class GammuService {
-  IOWebSocketChannel? _channel;
-  final _commandsPool = <Completer>[];
+  WebSocketChannel? _channel;
+  final _requests = <String, Completer>{};
 
   void _handler(dynamic message) {
-    print(message);
-    _channel?.sink.add('received!');
+    final decodedJson = jsonDecode(message);
+    final id = decodedJson['requestId'];
+    final data = decodedJson['data'];
+
+    if (_requests.containsKey(id)) {
+      _requests[id]!.complete(data);
+      _requests.remove(id);
+    }
   }
 
   Future<Messages> fetchByFolder(Folder folder) {
     switch (folder) {
       case Folder.inbox:
-        return _emit<Messages>(Command.fetchInbox);
+        return fetchInbox();
       case Folder.sent:
-        return _emit<Messages>(Command.fetchSent);
+        return fetchSent();
       case Folder.error:
-        return _emit<Messages>(Command.fetchError);
+        return fetchError();
       case Folder.outbox:
-        return _emit<Messages>(Command.fetchOutbox);
+        return fetchOutbox();
     }
   }
 
-  Future<Messages> fetchInbox() => _emit<Messages>(Command.fetchInbox);
-  Future<Messages> fetchError() => _emit<Messages>(Command.fetchError);
-  Future<Messages> fetchSent() => _emit<Messages>(Command.fetchSent);
-  Future<Messages> fetchOutbox() => _emit<Messages>(Command.fetchOutbox);
-  Future<Message> fetchMessage() => _emit<Message>(Command.fetchMessage);
+  Future<Messages> filterList(String name, {required Folder folder}) =>
+      _emit(Command.filterList,
+          params: {'name': name, 'folder': '$folder'},
+          extractor: _extractMessages);
 
-  Future<T> _emit<T>(Command cmd) {
-    final completer = Completer<T>();
-    _commandsPool.add(completer);
-    _channel?.sink.add(cmd);
+  Messages _extractMessages(dynamic data) =>
+      (data as List).map((e) => Message.fromMap(e)).toList();
 
-    return completer.future;
+  Message _extractMessage(dynamic data) => Message.fromMap(data);
+
+  Future<Messages> fetchInbox() =>
+      _emit(Command.fetchInbox, extractor: _extractMessages);
+  Future<Messages> fetchError() =>
+      _emit(Command.fetchError, extractor: _extractMessages);
+  Future<Messages> fetchSent() =>
+      _emit(Command.fetchSent, extractor: _extractMessages);
+  Future<Messages> fetchOutbox() =>
+      _emit(Command.fetchOutbox, extractor: _extractMessages);
+
+  Future<Message> fetchMessage(
+          {required String name, required Folder folder}) =>
+      _emit(Command.fetchMessage,
+          params: {'name': name, 'folder': '$folder'},
+          extractor: _extractMessage);
+
+  Future<T> _emit<T>(Command cmd,
+      {required T Function(dynamic) extractor,
+      Map<String, String>? params = const {}}) async {
+    final requestId = _getUniqueId();
+    final completer = Completer<dynamic>();
+
+    final request = {
+      'id': requestId,
+      'cmd': '$cmd',
+      'params': params,
+    };
+
+    debugPrint('$request');
+
+    _requests[requestId] = completer;
+    _channel?.sink.add(jsonEncode(request));
+
+    final data = await completer.future;
+    return extractor(data);
   }
 
   void connect(String url) {
-    _channel = IOWebSocketChannel.connect(Uri.parse(url));
-    _channel?.stream.listen(_handler);
+    _channel = WebSocketChannel.connect(Uri.parse(url));
+    _channel?.stream
+        .listen(_handler, onError: (error) => debugPrint(error.toString()));
   }
 
   void close() {
     _channel?.sink.close(status.goingAway);
+  }
+
+  String _getUniqueId() {
+    final now = DateTime.now();
+    return now.microsecondsSinceEpoch.toString();
   }
 }

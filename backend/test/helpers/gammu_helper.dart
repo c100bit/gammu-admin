@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:backend/gammu/enitities/gammu_command.dart';
 import 'package:backend/gammu/enitities/gammu_event.dart';
 

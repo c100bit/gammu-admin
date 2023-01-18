@@ -1,21 +1,25 @@
 import 'package:auto_route/auto_route.dart';
 import 'package:auto_route/empty_router_widgets.dart';
 
-import '../pages/home_page.dart';
-import '../pages/list_page/list_page.dart';
-import '../pages/message_page.dart';
+import '../pages/message/message_page.dart';
+import '../pages/root_page.dart';
+import '../pages/sms_list/list_page.dart';
 
 @MaterialAutoRouter(
   replaceInRouteName: 'Page,Route',
   routes: [
-    AutoRoute(page: HomePage, path: '/', children: [
+    AutoRoute(page: RootPage, path: '/', children: [
       AutoRoute(
         path: 'inbox',
         name: 'InboxTab',
         page: EmptyRouterPage,
         children: [
           AutoRoute(path: '', page: ListPage),
-          AutoRoute(path: ':name', page: MessagePage),
+          AutoRoute(
+            path: ':name',
+            page: MessagePage,
+            fullscreenDialog: true,
+          ),
         ],
       ),
       AutoRoute(
@@ -24,7 +28,11 @@ import '../pages/message_page.dart';
         page: EmptyRouterPage,
         children: [
           AutoRoute(path: '', page: ListPage),
-          AutoRoute(path: ':name', page: MessagePage),
+          AutoRoute(
+            path: ':name',
+            page: MessagePage,
+            fullscreenDialog: true,
+          ),
         ],
       ),
       AutoRoute(
@@ -33,7 +41,11 @@ import '../pages/message_page.dart';
         page: EmptyRouterPage,
         children: [
           AutoRoute(path: '', page: ListPage),
-          AutoRoute(path: ':name', page: MessagePage),
+          AutoRoute(
+            path: ':name',
+            page: MessagePage,
+            fullscreenDialog: true,
+          ),
         ],
       ),
       AutoRoute(
@@ -42,7 +54,11 @@ import '../pages/message_page.dart';
         page: EmptyRouterPage,
         children: [
           AutoRoute(path: '', page: ListPage),
-          AutoRoute(path: ':name', page: MessagePage),
+          AutoRoute(
+            path: ':name',
+            page: MessagePage,
+            fullscreenDialog: true,
+          ),
         ],
       ),
     ]),
