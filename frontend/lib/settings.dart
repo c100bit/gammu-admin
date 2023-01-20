@@ -1,1 +1,1 @@
-const gammuUrl = 'ws://localhost:8080';
+const gammuUrl = 'http://localhost:8080';

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:backend/gammu/cubit/gammu_cubit.dart';
 import 'package:backend/gammu/enitities/gammu_command.dart';
-import 'package:backend/gammu/handler/gammu_handler.dart';
+import 'package:backend/gammu/handlers/gammu_handler.dart';
 import 'package:backend/services/gammu_service/gammu_service.dart';
 import 'package:dart_frog/dart_frog.dart';
 import 'package:dart_frog_web_socket/dart_frog_web_socket.dart';

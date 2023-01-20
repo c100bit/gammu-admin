@@ -1,18 +1,47 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:dartz/dartz.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:frontend/services/gammu_service/command.dart';
-import 'package:web_socket_channel/web_socket_channel.dart';
-
 import 'package:web_socket_channel/status.dart' as status;
-
+import 'package:web_socket_channel/web_socket_channel.dart';
+import '../core/extensions.dart';
+import 'gammu_service/failures.dart';
 import 'gammu_service/folder.dart';
 import 'gammu_service/message.dart';
 
 class GammuService {
-  WebSocketChannel? _channel;
+  final authPath = '/auth';
+  late final WebSocketChannel? _channel;
+  final Uri uri;
+
+  String? _authToken;
+
+  GammuService({
+    required String url,
+  }) : uri = Uri.parse(url);
+
   final _requests = <String, Completer>{};
+
+  Future<Either<Failure, String>> _auth(
+      {required String login, required String password}) async {
+    try {
+      final url = uri.replace(path: authPath);
+      final response = await Dio().post('$url', data: {
+        'login': login,
+        'password': password,
+      });
+      if (response.statusCode != 200) return const Left(ServerFailure());
+      final token = response.data['token'];
+      if (token == null) return const Left(AuthFailure());
+      _authToken = token;
+      return Right(token);
+    } on DioError catch (e) {
+      return Left(ServerFailure(e.message));
+    }
+  }
 
   void _handler(dynamic message) {
     final decodedJson = jsonDecode(message);
@@ -84,10 +113,22 @@ class GammuService {
     return extractor(data);
   }
 
-  void connect(String url) {
-    _channel = WebSocketChannel.connect(Uri.parse(url));
+  bool get isAuthenticated => _authToken != null;
+
+  Future<Either<Failure, Success>> connect(
+      {required String login, required String password}) async {
+    final result = await _auth(login: login, password: password);
+    if (result.isLeft()) return Left(result.asLeft());
+
+    final url = uri.scheme == 'http'
+        ? uri.replace(scheme: 'ws')
+        : uri.replace(scheme: 'wss');
+
+    _channel = WebSocketChannel.connect(
+        url.replace(queryParameters: {'token': _authToken}));
     _channel?.stream
         .listen(_handler, onError: (error) => debugPrint(error.toString()));
+    return Right(Success());
   }
 
   void close() {

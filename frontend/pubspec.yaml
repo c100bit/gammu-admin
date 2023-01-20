@@ -45,6 +45,8 @@ dependencies:
   collection: ^1.16.0
   intl: ^0.18.0
   data_table_2: ^2.3.10
+  dio: ^4.0.6
+  dartz: ^0.10.1
 
 dev_dependencies:
   flutter_test:

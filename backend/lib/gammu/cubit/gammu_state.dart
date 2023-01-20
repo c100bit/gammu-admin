@@ -6,6 +6,17 @@ abstract class GammuState extends Equatable {
   });
 
   final String requestId;
+
+  dynamic get data;
+
+  Map<String, dynamic> toMap() {
+    final result = <String, dynamic>{}
+      ..addAll({'requestId': requestId, 'data': data});
+    return result;
+  }
+
+  @override
+  String toString() => json.encode(toMap());
 }
 
 class GammuListState extends GammuState {
@@ -17,19 +28,11 @@ class GammuListState extends GammuState {
   final List<Message> messages;
 
   @override
-  String toString() => json.encode(toMap());
-
-  @override
   List<Object?> get props => [requestId, messages];
 
-  Map<String, dynamic> toMap() {
-    final result = <String, dynamic>{}..addAll({
-        'requestId': requestId,
-        'data': messages.map((x) => x.toMap()).toList()
-      });
-
-    return result;
-  }
+  @override
+  List<Map<String, dynamic>> get data =>
+      messages.map((x) => x.toMap()).toList();
 }
 
 class GammuOneMsgState extends GammuState {
@@ -41,18 +44,8 @@ class GammuOneMsgState extends GammuState {
   final Message? message;
 
   @override
-  String toString() => json.encode(toMap());
-
-  @override
   List<Object?> get props => [requestId, message];
 
-  Map<String, dynamic> toMap() {
-    final result = <String, dynamic>{};
-
-    if (message != null) {
-      result.addAll({'requestId': requestId, 'data': message!.toMap()});
-    }
-
-    return result;
-  }
+  @override
+  Map<String, dynamic>? get data => message?.toMap();
 }

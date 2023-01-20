@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:backend/core/extensions.dart';
+import 'package:backend/auth/helpers/auth_helper.dart';
 import 'package:backend/services/gammu_service/gammu_service.dart';
 import 'package:broadcast_bloc/broadcast_bloc.dart';
 import 'package:equatable/equatable.dart';

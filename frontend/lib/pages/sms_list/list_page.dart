@@ -2,12 +2,11 @@ import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:frontend/core/extensions.dart';
-import 'package:frontend/widgets/app_card.dart';
 
-import '../../di_container.dart';
 import '../../routes/app_router.gr.dart';
 import '../../services/gammu_service/folder.dart';
 import 'bloc/sms_list_bloc.dart';
+import 'bloc/sms_list_bloc_pool.dart';
 import 'widgets/sms_list_table.dart';
 
 class ListPage extends StatefulWidget {
