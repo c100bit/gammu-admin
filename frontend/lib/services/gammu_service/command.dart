@@ -4,6 +4,7 @@ enum Command {
   fetchError,
   fetchOutbox,
   filterList,
+  removeList,
   fetchMessage;
 
   @override

@@ -47,7 +47,6 @@ class GammuService {
     final decodedJson = jsonDecode(message);
     final id = decodedJson['requestId'];
     final data = decodedJson['data'];
-
     if (_requests.containsKey(id)) {
       _requests[id]!.complete(data);
       _requests.remove(id);
@@ -66,6 +65,14 @@ class GammuService {
         return fetchOutbox();
     }
   }
+
+  Future<Messages> removeList(Messages messages, {required Folder folder}) =>
+      _emit(Command.removeList,
+          params: {
+            'messages': messages.map((e) => e.name).toList(),
+            'folder': '$folder'
+          },
+          extractor: _extractMessages);
 
   Future<Messages> filterList(String name, {required Folder folder}) =>
       _emit(Command.filterList,
@@ -94,7 +101,7 @@ class GammuService {
 
   Future<T> _emit<T>(Command cmd,
       {required T Function(dynamic) extractor,
-      Map<String, String>? params = const {}}) async {
+      Map<String, dynamic>? params = const {}}) async {
     final requestId = _getUniqueId();
     final completer = Completer<dynamic>();
 

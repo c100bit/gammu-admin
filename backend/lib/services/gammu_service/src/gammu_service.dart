@@ -19,19 +19,40 @@ class GammuService {
   Future<Messages> filterList(String name, {required Folder folder}) =>
       _readList(folder, name: name.toLowerCase());
 
-  Future<Messages> _readList(Folder folder, {String? name}) async {
+  Future<Messages> removeList(
+    List<String> names, {
+    required Folder folder,
+  }) async {
+    final filtered = await _filteredFiles(folder, names: names);
+    await Future.wait(filtered.map((file) => file.delete()));
+    return _readList(folder);
+  }
+
+  Future<Iterable<File>> _filteredFiles(
+    Folder folder, {
+    List<String> names = const [],
+    bool similar = false,
+  }) async {
+    final lowerNames = names.map((name) => name.toLowerCase());
     final list = await folderPool.getDirByFolder(folder)?.list().toList();
     if (list == null) return [];
 
     final files = list.whereType<File>();
-    final filtered = name == null
+    return names.isEmpty
         ? files
-        : files.where(
-            (file) => p
-                .basenameWithoutExtension(file.path)
-                .toLowerCase()
-                .contains(name),
-          );
+        : files.where((file) {
+            final fileName =
+                p.basenameWithoutExtension(file.path).toLowerCase();
+            if (similar) {
+              return lowerNames.where(fileName.contains).isNotEmpty;
+            }
+            return lowerNames.contains(fileName);
+          });
+  }
+
+  Future<Messages> _readList(Folder folder, {String? name}) async {
+    final names = name != null ? [name] : <String>[];
+    final filtered = await _filteredFiles(folder, names: names, similar: true);
     final messages = await Future.wait(
       filtered.map((file) => Message.fromFile(file, folder: folder)).toList(),
     );

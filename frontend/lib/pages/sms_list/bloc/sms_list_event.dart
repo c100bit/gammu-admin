@@ -28,3 +28,16 @@ class FilterSmsList extends SmsListEvent {
   @override
   List<Object> get props => [folder, text];
 }
+
+class RemoveList extends SmsListEvent {
+  final Messages messages;
+  final Folder folder;
+
+  RemoveList({
+    required this.messages,
+    required this.folder,
+  });
+
+  @override
+  List<Object> get props => [messages, folder];
+}

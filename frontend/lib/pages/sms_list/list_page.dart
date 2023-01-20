@@ -7,6 +7,7 @@ import '../../routes/app_router.gr.dart';
 import '../../services/gammu_service/folder.dart';
 import 'bloc/sms_list_bloc.dart';
 import 'bloc/sms_list_bloc_pool.dart';
+import 'data/sms_list_source.dart';
 import 'widgets/sms_list_table.dart';
 
 class ListPage extends StatefulWidget {
@@ -46,16 +47,37 @@ class _ListPageState extends State<ListPage> {
           builder: (context, state) {
             return Expanded(
               child: SmsListTable(
-                state: state,
+                key: UniqueKey(),
+                messages: state.messages,
                 onTap: (message) => context.router.push(
                   MessageRoute(name: message.name),
                 ),
+                empty: _buildEmpty(state.runtimeType),
                 isInbox: folder == Folder.inbox,
+                onRemoveTap: (messages) => bloc.add(RemoveList(
+                  messages: messages,
+                  folder: folder,
+                )),
               ),
             );
           },
         ),
       ],
     );
+  }
+
+  Widget? _buildEmpty(Type state) {
+    switch (state) {
+      case Loading:
+        return const CircularProgressIndicator();
+
+      case Error:
+        final error = (state as Error).text;
+        return Text('Something went wrong\nError - $error');
+
+      case Empty:
+        return const Text('There are no SMS');
+    }
+    return null;
   }
 }

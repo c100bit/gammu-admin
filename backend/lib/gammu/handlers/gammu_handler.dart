@@ -30,6 +30,9 @@ class GammuHandler {
       case GammuCommand.filterList:
         cubit.filterList(event.id, params: event.params);
         break;
+      case GammuCommand.removeList:
+        cubit.removeList(event.id, params: event.params);
+        break;
     }
   }
 

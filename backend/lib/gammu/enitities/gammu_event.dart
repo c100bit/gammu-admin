@@ -17,7 +17,7 @@ class GammuEvent extends Equatable {
       id: map['id'] as String,
       cmd: GammuCommand.fromMap(map['cmd'] as String),
       params: map.containsKey('params')
-          ? Map<String, String>.from(map['params'] as Map)
+          ? Map<String, dynamic>.from(map['params'] as Map)
           : {},
     );
   }
@@ -35,7 +35,7 @@ class GammuEvent extends Equatable {
 
   final String id;
   final GammuCommand cmd;
-  final Map<String, String> params;
+  final Map<String, dynamic> params;
 
   @override
   List<Object?> get props => [id, cmd, params];

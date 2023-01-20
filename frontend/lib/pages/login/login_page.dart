@@ -8,8 +8,8 @@ import 'package:frontend/widgets/app_card.dart';
 
 class LoginPage extends StatelessWidget implements AutoRouteWrapper {
   final void Function(bool) onResult;
-  final loginCtrl = TextEditingController();
-  final passwordCtrl = TextEditingController();
+  final loginCtrl = TextEditingController(text: 'admin');
+  final passwordCtrl = TextEditingController(text: 'password');
   final formKey = GlobalKey<FormState>();
 
   LoginPage({Key? key, required this.onResult}) : super(key: key);

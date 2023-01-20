@@ -14,11 +14,10 @@ class SmsListBloc extends Bloc<SmsListEvent, SmsListState> {
 
   SmsListBloc({
     required this.gammuService,
-  }) : super(Empty()) {
+  }) : super(Loading()) {
     on<SmsListEvent>((event, emit) async {
       switch (event.runtimeType) {
         case FetchSmsList:
-          emit(Loading());
           final messages =
               await gammuService.fetchByFolder((event as FetchSmsList).folder);
           if (messages.isEmpty) return emit(Empty());
@@ -33,6 +32,16 @@ class SmsListBloc extends Bloc<SmsListEvent, SmsListState> {
           );
           if (messages.isEmpty) return emit(Empty());
           emit(Loaded(messages: messages));
+          break;
+
+        case RemoveList:
+          emit(Loading());
+          final messages = await gammuService.removeList(
+            (event as RemoveList).messages,
+            folder: event.folder,
+          );
+          emit(Loaded(messages: messages));
+          break;
       }
     });
   }
