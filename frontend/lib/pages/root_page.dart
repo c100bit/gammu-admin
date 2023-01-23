@@ -18,6 +18,14 @@ class RootPage extends StatelessWidget with AutoRouteWrapper {
               centerTitle: true,
               title: const Text('Gammu Admin'),
               leading: const AutoLeadingButton(),
+              actions: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: IconButton(
+                      onPressed: () => context.router.push(SendRoute()),
+                      icon: const Icon(Icons.message)),
+                )
+              ],
             ),
         bottomNavigationBuilder: (context, tabsRouter) => SalomonBottomBar(
               currentIndex: tabsRouter.activeIndex,

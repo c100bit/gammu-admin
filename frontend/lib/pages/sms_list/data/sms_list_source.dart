@@ -9,7 +9,7 @@ class SmsListSource extends DataTableSource {
   final MessageRows rows;
   int _selectedCount = 0;
   final void Function(Message) onTap;
-  final dateFormat = DateFormat('yyyy-MM-dd hh:mm');
+  final dateFormat = DateFormat('yyyy-MM-dd HH:mm');
 
   SmsListSource({
     required Messages messages,

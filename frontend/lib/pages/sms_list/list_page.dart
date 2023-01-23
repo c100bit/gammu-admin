@@ -7,7 +7,6 @@ import '../../routes/app_router.gr.dart';
 import '../../services/gammu_service/folder.dart';
 import 'bloc/sms_list_bloc.dart';
 import 'bloc/sms_list_bloc_pool.dart';
-import 'data/sms_list_source.dart';
 import 'widgets/sms_list_table.dart';
 
 class ListPage extends StatefulWidget {

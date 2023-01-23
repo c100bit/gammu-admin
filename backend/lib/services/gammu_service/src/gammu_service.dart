@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:path/path.dart' as p;
 
 import 'folder.dart';
@@ -9,6 +10,7 @@ class GammuService {
   GammuService({required String path}) : folderPool = FolderPool(root: path);
 
   final msgExt = '.txt';
+  final formatter = DateFormat('yyyyMMdd_HHmmss');
 
   final FolderPool folderPool;
 
@@ -70,5 +72,27 @@ class GammuService {
       folder: folder,
       withContent: true,
     );
+  }
+
+  Future<Message?> sendMessage({
+    required String phone,
+    required String text,
+  }) async {
+    final path = folderPool.getDirByFolder(Folder.outbox);
+    if (path == null) return null;
+
+    final fileName = _buildOutboxFileName(phone);
+    final file = await File(p.join(path.path, fileName)).writeAsString(text);
+    return Message.fromFile(
+      file,
+      folder: Folder.outbox,
+      withContent: true,
+    );
+  }
+
+  String _buildOutboxFileName(String phone) {
+    final now = DateTime.now();
+    final formatted = formatter.format(now);
+    return 'OUTC${formatted}_00_${phone}_sms0$msgExt';
   }
 }

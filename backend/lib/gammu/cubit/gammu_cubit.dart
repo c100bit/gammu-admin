@@ -78,4 +78,21 @@ class GammuCubit extends BroadcastCubit<GammuState> {
     if (message == null) return emit(GammuOneMsgState(requestId: requestId));
     emit(GammuOneMsgState(requestId: requestId, message: message));
   }
+
+  Future<void> sendMessage(
+    String requestId, {
+    required Map<String, dynamic> params,
+  }) async {
+    if (!params.containsKey('text') || !params.containsKey('phone')) {
+      return emit(GammuOneMsgState(requestId: requestId));
+    }
+
+    final message = await gammuService.sendMessage(
+      text: params['text'] as String,
+      phone: params['phone'] as String,
+    );
+
+    if (message == null) return emit(GammuOneMsgState(requestId: requestId));
+    emit(GammuOneMsgState(requestId: requestId, message: message));
+  }
 }

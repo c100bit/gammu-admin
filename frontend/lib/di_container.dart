@@ -6,6 +6,7 @@ import 'package:frontend/settings.dart';
 import 'package:get_it/get_it.dart';
 
 import 'pages/message/bloc/sms_bloc.dart';
+import 'pages/send/bloc/send_bloc.dart';
 import 'pages/sms_list/bloc/sms_list_bloc_pool.dart';
 
 final getIt = GetIt.instance;
@@ -17,4 +18,5 @@ Future<void> init() async {
   getIt.registerSingleton(SmsListBlocPool(gammuService: getIt()));
   getIt.registerFactory(() => SmsBloc(gammuService: getIt()));
   getIt.registerFactory(() => LoginBloc(gammuService: getIt()));
+  getIt.registerFactory(() => SendBloc(gammuService: getIt()));
 }

@@ -7,6 +7,7 @@ enum GammuCommand {
   fetchOutbox,
   filterList,
   removeList,
+  sendMessage,
   fetchMessage;
 
   factory GammuCommand.fromMap(String cmd) =>

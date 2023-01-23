@@ -21,7 +21,7 @@ class MessagePage extends StatefulWidget {
 }
 
 class _MessagePageState extends State<MessagePage> {
-  final dateFormat = DateFormat('yyyy-MM-dd hh:mm');
+  final dateFormat = DateFormat('yyyy-MM-dd HH:mm');
 
   @override
   void initState() {

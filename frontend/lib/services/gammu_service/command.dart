@@ -5,6 +5,7 @@ enum Command {
   fetchOutbox,
   filterList,
   removeList,
+  sendMessage,
   fetchMessage;
 
   @override

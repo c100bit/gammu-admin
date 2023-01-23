@@ -99,6 +99,16 @@ class GammuService {
           params: {'name': name, 'folder': '$folder'},
           extractor: _extractMessage);
 
+  Future<Message> sendMessage({
+    required String phone,
+    required String text,
+  }) =>
+      _emit(
+        Command.sendMessage,
+        params: {'phone': phone, 'text': text},
+        extractor: _extractMessage,
+      );
+
   Future<T> _emit<T>(Command cmd,
       {required T Function(dynamic) extractor,
       Map<String, dynamic>? params = const {}}) async {
