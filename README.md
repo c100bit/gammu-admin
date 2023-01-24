@@ -7,7 +7,8 @@ login=admin\
 password=password\
 backend=http://127.0.0.1:9000\
 backendPort=9000\
-frontendPort=8000
+frontendPort=8000\
+gammuPath=/var/spool/gammu
 
 ![Screen](./screens/screen1.png)
 
