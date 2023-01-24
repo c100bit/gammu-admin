@@ -1,1 +1,2 @@
-const gammuUrl = 'http://localhost:8080';
+const gammuUrl =
+    String.fromEnvironment('backend', defaultValue: 'http://localhost:8080');

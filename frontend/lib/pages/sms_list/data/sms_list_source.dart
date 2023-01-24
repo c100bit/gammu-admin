@@ -1,8 +1,8 @@
 import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/services/gammu_service/message.dart';
 import 'package:intl/intl.dart';
 
+import '../../../services/gammu_service/message.dart';
 import 'message_row.dart';
 
 class SmsListSource extends DataTableSource {
